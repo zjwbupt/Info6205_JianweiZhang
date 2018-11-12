@@ -1,3 +1,7 @@
+/*
+ * Author: 2018. Jianwei Zhang
+ */
+
 import java.util.*;
 import java.util.function.BiFunction;
 import java.io.*;
@@ -252,20 +256,21 @@ public class BSTSimple<Key extends Comparable<Key>, Value> implements BSTdetail<
         class Result {
             double size;
             double height;
+            double logSize;
             double sqrtSize;
 
             Result(double size, double height) {
                 this.size = size;
                 this.height = height;
                 sqrtSize = Math.sqrt(size);
+                logSize = Math.log(size);
             }
 
             @Override
             public String toString() {
-                return "Result{" +
-                        "size=" + size +
-                        ", height=" + height +
+                return "height=" + height +
                         ", sqrtSize=" + sqrtSize +
+                        ", logSize=" + logSize +
                         '}';
             }
         }
@@ -306,19 +311,17 @@ public class BSTSimple<Key extends Comparable<Key>, Value> implements BSTdetail<
         }
         // output
         try {
-            File file = new File("./out.csv");
-            file.createNewFile();
-            BufferedWriter out = new BufferedWriter(new FileWriter(file));
-            out.write("Initial Size,Experiment Size(N),Experiment Height(h),Sqrt(N)\r\n");
+
+            FileOutputStream fis = new FileOutputStream("result.csv");
+            OutputStreamWriter isr = new OutputStreamWriter(fis);
+            BufferedWriter bw = new BufferedWriter(isr);
+            bw.write("Size(N),Experiment Height(h),Log of Size,Sqrt of Size\r\n");
             for (Map.Entry<Integer, Result> result : resultList.entrySet()) {
-                System.out.println("initialSize=" + result.getKey() + ", " + result.getValue());
-                out.write(result.getKey() + "," +
-                        result.getValue().size + "," +
-                        result.getValue().height + "," +
-                        result.getValue().sqrtSize + "\r\n");
+                System.out.println("Size=" + result.getKey() + ", " + result.getValue());
+                bw.write(result.getKey() + "," + result.getValue().height + "," + result.getValue().logSize+ "," + result.getValue().sqrtSize + "\r\n");
             }
-            out.flush();
-            out.close();
+            bw.flush();
+            bw.close();
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -331,14 +334,5 @@ public class BSTSimple<Key extends Comparable<Key>, Value> implements BSTdetail<
         if (l == r) return;
         generate(a,initA,l,mid-1);
         generate(a,initA,mid+1, r);
-    }
-
-    public void resultOutput() {
-        int height = height();
-        int size = size();
-        System.out.print("Size: " + size + "\t");
-        System.out.print("Height: " + height + "\t");
-        System.out.print("lg(size): " + Math.log(size)/Math.log(2) + "\t");
-        System.out.println("Sqrt(size): " + Math.sqrt(size));
     }
 }
